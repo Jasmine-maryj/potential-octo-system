@@ -1,115 +1,112 @@
-import React from "react";
-import AirportService from "../services/AirportService.js"
+import React, { useState, useEffect } from "react";
+import AirportService from "../services/AirportService";
+import { Link } from "react-router-dom";
 
-export default function Airport() {
-    const [formData, setFormData] = useState({
-        name: '',
-        location: '',
-        code: '',
-        departingFlights: [''],
-    });
+export default function ListAirport() {
+  const [airports, setAirports] = useState([]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+  const getAllAirports = () => {
+    AirportService.getAllAirports()
+      .then((res) => {
+        setAirports(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-    const handleFlightChange = (index, value) => {
-        const newDepartingFlights = [...formData.departingFlights];
-        newDepartingFlights[index] = value;
-        setFormData({ ...formData, departingFlights: newDepartingFlights });
-    };
+  useEffect(() => {
+    getAllAirports();
+  }, []);
 
-    const addFlight = () => {
-        setFormData({ ...formData, departingFlights: [...formData.departingFlights, ''] });
-    };
+  const deleteAirport = (airportCode) => {
+    AirportService.deleteAirport(airportCode)
+      .then((res) => {
+        getAllAirports();
+      })
+      .catch((error) => console.log(error));
+  };
 
-    const removeFlight = (index) => {
-        const newDepartingFlights = [...formData.departingFlights];
-        newDepartingFlights.splice(index, 1);
-        setFormData({ ...formData, departingFlights: newDepartingFlights });
-    };
+  const addFlightToAirport = (airportCode, flight) => {
+    AirportService.addFlightToAirport(airportCode, flight)
+      .then((res) => {
+        getAllAirports();
+      })
+      .catch((error) => console.log(error));
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // You can handle form submission here, e.g., send the data to an API
-        const airport = { name, location, code, departingFlights }
+  const removeFlightFromAirport = (airportCode, flightId) => {
+    AirportService.removeFlightFromAirport(airportCode, flightId)
+      .then((res) => {
+        getAllAirports();
+      })
+      .catch((error) => console.log(error));
+  };
 
-        // console.log(employee);
-        AirportService.createAirport(formData).then(res => {
-            console.log(res.data)
-            navigate("/airports")
-        }).catch(error => console.log(error));
-
-        console.log(formData);
-    };
-
-    return (
-        <div className="container">
-            <h2 className="mt-4">Airport Form</h2>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label htmlFor="name" className="form-label">Name:</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="location" className="form-label">Location:</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="location"
-                        name="location"
-                        value={formData.location}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="code" className="form-label">Code:</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="code"
-                        name="code"
-                        value={formData.code}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Departing Flights:</label>
-                    {formData.departingFlights.map((flight, index) => (
-                        <div className="input-group mb-3" key={index}>
-                            <input
-                                type="text"
-                                className="form-control"
-                                placeholder="Flight Details"
-                                value={flight}
-                                onChange={(e) => handleFlightChange(index, e.target.value)}
-                            />
-                            <button
-                                type="button"
-                                className="btn btn-outline-danger"
-                                onClick={() => removeFlight(index)}
-                            >
-                                Remove
-                            </button>
-                        </div>
-                    ))}
-                    <button type="button" className="btn btn-outline-primary" onClick={addFlight}>
-                        Add Flight
-                    </button>
-                </div>
-                <div className="mb-3">
-                    <button type="submit" className="btn btn-primary">Submit</button>
-                </div>
-            </form>
-            <Link to="/airports">Back to Airports</Link>
+  return (
+    <div className="container">
+      <h1 className="text-center">List Airports</h1>
+      <Link to="/add-airport" className="btn btn-primary mb-2">
+        Add Airport
+      </Link>
+      <table className="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Airport Name</th>
+            <th>Location</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {airports.map((airport) => (
+            <tr key={airport.code}>
+              <td>{airport.name}</td>
+              <td>{airport.location}</td>
+              <td>
+                <Link to={`/add-flight/${airport.code}`} className="btn btn-success">
+                  Add Flight
+                </Link>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => deleteAirport(airport.code)}
+                >
+                  Delete Airport
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {airports.map((airport) => (
+        <div key={airport.code}>
+          <h2>{airport.name} - Flights:</h2>
+          <table className="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>Flight Name</th>
+                <th>Destination</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {airport.departingFlights &&
+                airport.departingFlights.map((flight) => (
+                  <tr key={flight.id}>
+                    <td>{flight.name}</td>
+                    <td>{flight.destination}</td>
+                    <td>
+                      <button
+                        className="btn btn-danger"
+                        onClick={() => removeFlightFromAirport(airport.code, flight.id)}
+                      >Remove Flight</button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+          <hr />
         </div>
-    )
+      ))}
+    </div>
+  );
 }
