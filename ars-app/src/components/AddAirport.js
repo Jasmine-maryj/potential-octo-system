@@ -1,29 +1,27 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import AirportService from "../services/AirportService";
+import AirportService from '../services/AirportService';
 
-export default function AddAirport() {
-
-    const [flightName, setFlightName] = useState("")
-    const [origin, setOrigin] = useState("")
-    const [destination, setDestination] = useState("")
-    const [availableSeats, setAvailableSeats] = useState("")
-    const [arrivalTime, setArrivalTime] = useState("")
-    const [departureTime, setDepartureTime] = useState("")
+export default function AddAirportForm() {
+    
+    const [name, setName] = useState("");
+    const [code, setCode] = useState("");
+    const [location, setLocation] = useState("");
 
     const SubmitAirportData = (e) => {
         e.preventDefault();
 
         const navigate = useNavigate();
 
-        const airport = { flightName, origin, destination, availableSeats, arrivalTime, departureTime };
+        const airport = {name, code, location}
 
-        AirportService.createAiport(airport).then((res) => {
-            console.log(res.data)
-            navigate("/airports")
-        }).catch(error => console.log(error));
-    }
-
+        AirportService.createAiport(airport)
+        .then((res) => {
+          console.log(res.data);
+          navigate("/airports");
+        })
+        .catch((error) => console.error(error));
+    };
 
     return (
         <div>
@@ -33,81 +31,54 @@ export default function AddAirport() {
             <div className="container">
                 <div className="row">
                     <div className="card col-md-6 offset-md-3 offset-md-3">
+                        
                         <div className="card-body">
                             <form>
                                 <div className="form-group mb-2">
-                                    <label className="form-label">Flight Name</label>
+                                    <label className="form-label">Name</label>
                                     <input
                                         type="text"
-                                        placeholder="Enter Flight Name"
+                                        placeholder="Enter Name"
                                         className="form-control"
-                                        value={flightName}
-                                        name="flightName"
-                                        onChange={(e) => setFlightName(e.target.value)}
-                                    ></input>
+                                        value={name}
+                                        name="name"
+                                        onChange={(e) => setName(e.target.value)}
+                                    >
+                                    </input>
                                 </div>
                                 <div className="form-group mb-2">
-                                    <label className="form-label">Origin</label>
+                                    <label className="form-label">code</label>
+                                    <input
+                                        className="form-control"
+                                        type="text"
+                                        placeholder="Enter Code"
+                                        name="code"
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                    >
+                                    </input>
+                                </div>
+                                <div className="form-group mb-2">
+                                    <label className="form-label">Location</label>
                                     <input
                                         type="text"
-                                        placeholder="Enter Flight Origin"
                                         className="form-control"
-                                        value={origin}
-                                        name="origin"
-                                        onChange={(e) => setOrigin(e.target.value)}
-                                    ></input>
-                                </div>
-                                <div className="form-group mb-2">
-                                    <label className="form-label">Destination</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Enter Flight Destination"
-                                        className="form-control"
-                                        value={destination}
-                                        name="destination"
-                                        onChange={(e) => setDestination(e.target.value)}
-                                    ></input>
-                                </div>
-                                <div className="form-group mb-2">
-                                    <label className="form-label">AvailableSeats</label>
-                                    <input
-                                        type="number"
-                                        placeholder="Enter Flight Available Seats"
-                                        className="form-control"
-                                        value={availableSeats}
-                                        name="availableSeats"
-                                        onChange={(e) => setAvailableSeats(e.target.value)}
-                                    ></input>
-                                </div>
-                                <div className="form-group mb-2">
-                                    <label className="form-label">ArrivalTime</label>
-                                    <input
-                                        type="datetime-local"
-                                        placeholder="Enter Flight Arrivat Time"
-                                        className="form-control"
-                                        value={arrivalTime}
-                                        name="arrivalTime"
-                                        onChange={(e) => setArrivalTime(e.target.value)}
-                                    ></input>
-                                </div>
-                                <div className="form-group mb-2">
-                                    <label className="form-label">DepartureTime</label>
-                                    <input
-                                        type="datetime-local"
-                                        placeholder="Enter Flight Departure Time"
-                                        className="form-control"
-                                        value={departureTime}
-                                        name="departureTime"
-                                        onChange={(e) => setDepartureTime(e.target.value)}
-                                    ></input>
+                                        placeholder="Enter Location"
+                                        name="location"
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                    >
+                                    </input>
                                 </div>
                                 <button className="btn btn-success" onClick={(e) => SubmitAirportData(e)}>Submit</button>
-                                <Link to ="/airports" className="btn btn-danger">Cancel</Link>
+                                <Link to="/airports" className="btn btn-danger">Cancel</Link>
                             </form>
                         </div>
                     </div>
                 </div>
-            </div >
+
+            </div>
         </div>
-    )
-}
+    );
+};
+

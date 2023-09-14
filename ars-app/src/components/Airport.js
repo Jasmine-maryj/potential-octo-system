@@ -9,6 +9,7 @@ export default function ListAirport() {
     AirportService.getAllAirports()
       .then((res) => {
         setAirports(res.data);
+        console.log(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -53,6 +54,7 @@ export default function ListAirport() {
         <thead>
           <tr>
             <th>Airport Name</th>
+            <th>Airport Code</th>
             <th>Location</th>
             <th>Actions</th>
           </tr>
@@ -61,6 +63,7 @@ export default function ListAirport() {
           {airports.map((airport) => (
             <tr key={airport.code}>
               <td>{airport.name}</td>
+              <td>{airport.code}</td>
               <td>{airport.location}</td>
               <td>
                 <Link to={`/add-flight/${airport.code}`} className="btn btn-success">
@@ -83,8 +86,10 @@ export default function ListAirport() {
           <table className="table table-bordered table-striped">
             <thead>
               <tr>
-                <th>Flight Name</th>
+                <th>Flight Number</th>
                 <th>Destination</th>
+                <th>Arrival Time</th>
+                <th>Departure Time</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -92,8 +97,10 @@ export default function ListAirport() {
               {airport.departingFlights &&
                 airport.departingFlights.map((flight) => (
                   <tr key={flight.id}>
-                    <td>{flight.name}</td>
+                    <td>{flight.flightNumber}</td>
                     <td>{flight.destination}</td>
+                    <td>{flight.arrivalTime}</td>
+                    <td>{flight.departureTime}</td>
                     <td>
                       <button
                         className="btn btn-danger"

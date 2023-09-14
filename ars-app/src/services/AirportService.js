@@ -13,6 +13,9 @@ class AirportService{
     createAiport(airport){
         return axios.post(ARS_BASE_REST_API_URL+"/airports/add", airport);
     }
+    createFlight(flight){
+        return axios.post(ARS_BASE_REST_API_URL+"/airports/flights/add", flight);
+    }
 }
 
 export default new AirportService()
