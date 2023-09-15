@@ -10,11 +10,13 @@ class AirportService{
         return axios.get(ARS_BASE_REST_API_URL+"/airports/all");
     }
 
-    createAiport(airport){
+    createAirport(airport){
         return axios.post(ARS_BASE_REST_API_URL+"/airports/add", airport);
     }
-    createFlight(flight){
-        return axios.post(ARS_BASE_REST_API_URL+"/airports/flights/add", flight);
+
+    createFlight(flight, airportCode) {
+        const url = `${ARS_BASE_REST_API_URL}/flights/add?code=${airportCode}`;
+        return axios.post(url, flight);
     }
 }
 

@@ -31,7 +31,7 @@ export default function ListAirport() {
   const addFlightToAirport = (airportCode, flight) => {
     AirportService.addFlightToAirport(airportCode, flight)
       .then((res) => {
-        getAllAirports();
+        getAllAirports(res.data);
       })
       .catch((error) => console.log(error));
   };
@@ -66,7 +66,7 @@ export default function ListAirport() {
               <td>{airport.code}</td>
               <td>{airport.location}</td>
               <td>
-                <Link to={`/add-flight/${airport.code}`} className="btn btn-success">
+                <Link to={`/add-flight?code=${airport.code}`} className="btn btn-success">
                   Add Flight
                 </Link>
                 <button

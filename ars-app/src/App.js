@@ -1,4 +1,5 @@
 import './App.css';
+import React from 'react';
 import Header from './components/Header.js';
 import Footer from './components/Footer.js';
 import Hero from './components/Hero.js';
@@ -15,9 +16,9 @@ function App() {
         <div className="container">
           <Routes>
             <Route path="/" exact element={<Hero />} />
-            <Route path="/airports" exact element={<Airport />} />
-            <Route path="/add-airport" exact element={<AddAirportForm />} />
-            <Route path="/add-flight/:airportCode" exact element={<AddFlight />} />
+            <Route path="/airports" element={<Airport />} />
+            <Route path="/add-airport" element={<AddAirportForm />} />
+            <Route path="/add-flight" element={<AddFlight />} />
           </Routes>
         </div>
         <Footer />

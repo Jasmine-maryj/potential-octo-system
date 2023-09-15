@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import AirportService from "../services/AirportService";
 
 export default function AddFlight() {
@@ -10,13 +10,22 @@ export default function AddFlight() {
     const [availableSeats, setAvailableSeats] = useState("")
     const [arrivalTime, setArrivalTime] = useState("")
     const [departureTime, setDepartureTime] = useState("")
+    const [code, setCode] = useState("");
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    useEffect(() => {
+        // Extract the airportCode from the query parameter in the URL
+        const queryParams = new URLSearchParams(location.search);
+        const code = queryParams.get("code");
+        setCode(code);
+    }, [location]);
     
     const SubmitFlightData = (e) => {
+
         e.preventDefault();
 
-        const navigate = useNavigate();
-        
         const flight = {
             flightName,
             origin,
@@ -27,7 +36,7 @@ export default function AddFlight() {
         };
 
         console.log(flight)
-        AirportService.createFlight(flight)
+        AirportService.createFlight(flight, code)
             .then((res) => {
                 console.log(res.data);
                 navigate("/airports"); 

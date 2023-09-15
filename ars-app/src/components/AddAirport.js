@@ -1,21 +1,21 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import AirportService from '../services/AirportService';
+import AirportService from '../services/AirportService.js';
 
 export default function AddAirportForm() {
     
     const [name, setName] = useState("");
     const [code, setCode] = useState("");
     const [location, setLocation] = useState("");
+    
+    const navigate = useNavigate();
 
     const SubmitAirportData = (e) => {
         e.preventDefault();
 
-        const navigate = useNavigate();
-
         const airport = {name, code, location}
 
-        AirportService.createAiport(airport)
+        AirportService.createAirport(airport)
         .then((res) => {
           console.log(res.data);
           navigate("/airports");
