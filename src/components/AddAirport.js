@@ -1,0 +1,109 @@
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import AirportService from '../services/AirportService.js';
+
+export default function AddAirportForm() {
+
+    const [name, setName] = useState("");
+    const [code, setCode] = useState("");
+    const [location, setLocation] = useState("");
+
+    const navigate = useNavigate();
+    const locationParam = useLocation();
+
+    useEffect(() => {
+        const queryParam = new URLSearchParams(locationParam.search);
+        const queryCode = queryParam.get("code");
+
+        if (queryCode) {
+            // If the 'code' query parameter is present, set it in the state
+            setCode(queryCode);
+
+            // Fetch the airport details by code
+            AirportService.getAirportByCode(queryCode).then((res) => {
+                console.log(res.data);
+                setName(res.data.name);
+                setLocation(res.data.location);
+            });
+        }
+    }, [locationParam]);
+
+    const SubmitAirportData = (e) => {
+        e.preventDefault();
+
+        const airport = { name, code, location }
+
+        if (code) {
+            AirportService.updateAirport(airport, airport.code).then((res) => {
+                console.log(res.data);
+                navigate("/airports")
+            }).catch((error) => console.error(error))
+        } else {
+            AirportService.createAirport(airport)
+                .then((res) => {
+                    console.log(res.data);
+                    navigate("/airports");
+                })
+                .catch((error) => console.error(error));
+        }
+    };
+
+    return (
+        <div>
+            <br></br>
+            <br></br>
+            <br></br>
+            <div className="container">
+                <div className="row">
+                    <div className="card col-md-6 offset-md-3 offset-md-3">
+
+                        <div className="card-body">
+                            <form>
+                                <div className="form-group mb-2">
+                                    <label className="form-label">Name</label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Name"
+                                        className="form-control"
+                                        value={name}
+                                        name="name"
+                                        onChange={(e) => setName(e.target.value)}
+                                    >
+                                    </input>
+                                </div>
+                                <div className="form-group mb-2">
+                                    <label className="form-label">code</label>
+                                    <input
+                                        className="form-control"
+                                        type="text"
+                                        placeholder="Enter Code"
+                                        name="code"
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                    >
+                                    </input>
+                                </div>
+                                <div className="form-group mb-2">
+                                    <label className="form-label">Location</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Enter Location"
+                                        name="location"
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                    >
+                                    </input>
+                                </div>
+                                <button className="btn btn-success" onClick={(e) => SubmitAirportData(e)}>Submit</button>
+                                <Link to="/airports" className="btn btn-danger">Cancel</Link>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    );
+};
+
